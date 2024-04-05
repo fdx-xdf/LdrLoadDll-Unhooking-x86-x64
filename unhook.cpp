@@ -98,7 +98,7 @@ int main()
 	LPVOID jmpAddr = (void*)((char*)origLdrLoadDll + 0x5);
 	*(void**)(jumpAddress) = jmpAddr;
 	LPVOID trampoline = VirtualAlloc(NULL, 19, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
-	// mov qword ptr[rsp + 10h]  原始的LdrLoadDll中汇编，使用我们自己的防止被hook
+	// mov qword ptr[rsp + 10h]  鍘熷鐨凩drLoadDll涓眹缂栵紝浣跨敤鎴戜滑鑷繁鐨勯槻姝㈣hook
 	// mov r11,address
 	// jmp rll
 	// ret
@@ -111,19 +111,19 @@ int main()
 	VirtualProtect(trampoline, 30, PAGE_EXECUTE_READ, &oldProtect);
 	LdrLoadrDll = (pNewLdrLoadDll)trampoline;
 
-	//Loading Wininet.dll
+	//Loading User32.dll
 	HANDLE User32module = NULL;
 	LdrLoadrDll(NULL, 0, &ldrldll, &User32module);
 	pMessageBoxW MyMessageBoxW = (pMessageBoxW)GetProcAddress((HMODULE)User32module, "MessageBoxW");
 	MyMessageBoxW(0, 0, 0, 0);
 	#else
-	//  x86 架构下的代码
+	//  x86 鏋舵瀯涓嬬殑浠ｇ爜
 	//  mov    edi, edi
 	//  push   ebp
 	//  mov    ebp, esp
-	//	mov eax,address 
-	//	jmp eax
-	//	ret
+	//  mov eax,address 
+	//  jmp eax
+	//  ret
 	LPVOID trampoline = VirtualAlloc(NULL, 19, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 
 	LPVOID jmpAddr = (void*)((char*)origLdrLoadDll + 0x5);
