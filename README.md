@@ -1,4 +1,3 @@
-"# LdrLoadDll-Unhooking-x86-x64" 
 
 # LdrLoadDll-Unhooking-x86-x64
 
