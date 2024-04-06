@@ -126,17 +126,17 @@ int main()
 	//  ret
 	LPVOID trampoline = VirtualAlloc(NULL, 19, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 
-	LPVOID jmpAddr = (void*)((char*)origLdrLoadDll + 0x5);
+	LPVOID jmpAddr = (void*)((char*)origLdrLoadDll + 0x2);
 
 	unsigned char jumpPrelude[] = { 0xB8 };
 	unsigned char jumpAddress[] = { 0x65, 0x72, 0x45, 0x77 };
 	unsigned char jumpEpilogue[] = { 0xFF, 0xE0, 0xC3 };
 	*(void**)(jumpAddress) = jmpAddr;
 		
-	CCopyMemory(trampoline, (PVOID)"\x89\xFF\x55\x89\xE5", 5);
-	CCopyMemory((PBYTE)trampoline + 5, jumpPrelude, sizeof jumpPrelude);
-	CCopyMemory((PBYTE)trampoline + 5 + sizeof jumpPrelude, jumpAddress, sizeof jumpAddress);
-	CCopyMemory((PBYTE)trampoline + 5 + sizeof jumpPrelude + sizeof jumpAddress, jumpEpilogue, sizeof jumpEpilogue);
+	CCopyMemory(trampoline, (PVOID)"\x89\xFF", 2);
+	CCopyMemory((PBYTE)trampoline + 2, jumpPrelude, sizeof jumpPrelude);
+	CCopyMemory((PBYTE)trampoline + 2 + sizeof jumpPrelude, jumpAddress, sizeof jumpAddress);
+	CCopyMemory((PBYTE)trampoline + 2 + sizeof jumpPrelude + sizeof jumpAddress, jumpEpilogue, sizeof jumpEpilogue);
 	DWORD oldProtect = 0;
 	VirtualProtect(trampoline, 30, PAGE_EXECUTE_READ, &oldProtect);
 	LdrLoadrDll = (pNewLdrLoadDll)trampoline;
